@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 public class Application {
 	Dictionary dictionary = null;
@@ -22,15 +23,45 @@ public class Application {
 		}
 	}
 	
+	/**
+	 * Return a unique alphabetically ordered list of all permutations of
+	 * the letters passed in.
+	 * 
+	 * @param letters
+	 * @return
+	 */
+	public static String[] function(String letters) {
+		TreeSet<String> stringSet = new TreeSet<String>();
+
+		for (int i = 0; i < letters.length(); i++) {
+			for (int j = i; j < letters.length(); j++) {
+				stringSet.add(letters.substring(0,i) + letters.charAt(j));
+			}
+		}
+		return stringSet.toArray(new String[stringSet.size()]);
+	}
+	
+	public static String getSub(String string, int head, int index) {
+		return string.substring(0,head) + string.charAt(index);
+	}
+
+	
 	public String[] getWordList(String letterSet) {
 		LinkedList<String> wordList = new LinkedList<String>();
 		Queue<String> queue = new LinkedList<String>();
 
 		// add permutations to queue
+		for (int i = 0; i < letterSet.length(); i++) {
+			for (int j = i; j < letterSet.length(); j++) {
+				addPermutation(queue, "", letterSet.substring(0, i) + letterSet.charAt(j)); 
+			}
+		}
 		
-		
-		
-		addPermutation(queue, "", letterSet);
+		// add permutations
+		String[] arrayList = function(letterSet);
+		for (String string : arrayList) {
+			addPermutation(queue, "", string);			
+		}
 		
 		// show permutations
 		System.out.println("validating " + queue.size() + " permutations");
@@ -96,9 +127,6 @@ public class Application {
 				scrabbleWords.showWordList(scrabbleWords.getWordList(letters));
 			}
 		}
-		
-		
-		
 	}
 
 	/**
@@ -126,7 +154,5 @@ public class Application {
 			}
 		}
 	}
-	
-	
 	
 }
