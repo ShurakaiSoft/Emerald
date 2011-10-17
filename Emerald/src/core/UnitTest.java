@@ -32,10 +32,14 @@ public class UnitTest {
 	@Test
 	public void testIsValidValid() {
 		String result;
-		assertTrue(isValid("az") != null);
+		result = isValid("az");
+		assertTrue(result != null && result.equals("az") == true);
 		result = isValid("AZ");
 		assertTrue(result != null && result.equals("az") == true);
-		assertTrue(isValid("adasfasdfz") != null);	
+		result = isValid("adasfasdfz");
+		assertTrue(result != null && result.equals("aaaddffssz") == true);
+		result = isValid("za");
+		assertTrue(result != null && result.equals("az") == true);
 	}
 	
 	@Test

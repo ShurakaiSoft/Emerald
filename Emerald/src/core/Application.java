@@ -54,21 +54,19 @@ public class Application {
 	 * contain only lower case characters or it will return null.
 	 * 
 	 * @param letters set of characters to test
-	 * @return null if not valid, else string of lower case characters.
+	 * @return null if not valid, else a sorted string of lower case characters.
 	 */
 	public static String isValid(String letters) {
-		StringBuilder valid = new StringBuilder(letters.length());
-		char ch;
+		char[] array = new char[letters.length()];
 
 		for (int i = 0; i < letters.length(); i++) {
-			ch = Character.toLowerCase(letters.charAt(i));
-			if (ch < 'a' || ch > 'z') {
+			array[i] = Character.toLowerCase(letters.charAt(i));
+			if (array[i] < 'a' || array[i] > 'z') {
 				return null;
-			} else {
-				valid.append(ch); 				
 			}
 		}
-		return valid.toString();
+		java.util.Arrays.sort(array);
+		return new String(array);
 	}
 	
 	public static void main(String[] args) {
