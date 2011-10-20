@@ -1,0 +1,16 @@
+The ToDo list.
+
+
+* Optimise dictionary search with a set of sorted arrays of strings that are
+the same length.
+
+* Allow the TextUI to be interactive and non-interactive so that it could be 
+used in scripts.
+
+* Enhance the Controller to be able to handle multiple asynchronous requests.
+
+* Enhance the Solver to solve multiple problems asynchronously by using threads
+or perhaps a thread pool.  
+
+* Add a gui user interface.
+

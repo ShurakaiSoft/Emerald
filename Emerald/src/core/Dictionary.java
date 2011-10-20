@@ -3,10 +3,18 @@ package core;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+
+/**
+ * This class represents a dictionary as a serchable array of strings.
+ * The words are sorted in an ascending order so that binary search algorithn
+ * can be used for faster searching.
+
+ * @author Steve
+ *
+ */
 public final class Dictionary {
 	private String[] words;
 
@@ -25,7 +33,7 @@ public final class Dictionary {
 
 	
 	/**
-	 * Uses a binary searchy to verify if the given word exists in the
+	 * Uses a binary search to verify if the given word exists in the
 	 * dictionary.
 	 * 
 	 * @param word to search for
@@ -34,7 +42,6 @@ public final class Dictionary {
 	public boolean isWord(String word) {
 		// return (Arrays.binarySearch(words, word) >= 0) ? true : false;
 		return iterativeBinarySearch(word);
-		
 	}
 
 	
@@ -62,12 +69,13 @@ public final class Dictionary {
 		return wordList.toArray(new String[wordList.size()]);
 	}
 	
+	
 	/**
 	 * My implementation of an iterative binary search before I realised that
 	 * java.util.Arrays has a static binarySearch method.
 	 * 
-	 * @param word
-	 * @return
+	 * @param word to search in dictionary.
+	 * @return true if found, false otherwise.
 	 */
 	private boolean iterativeBinarySearch(String word) {
 		int min = 0;
