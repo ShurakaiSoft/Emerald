@@ -15,8 +15,9 @@ public class DictionaryTests {
 		dictionary = new Dictionary("testDictionary.txt");
 	}
 
+	
 	/**
-	 * Test for some random words
+	 * Test for some words that do exist in the dictionary.
 	 */
 	@Test
 	public void testIsWordTrue() {
@@ -25,16 +26,36 @@ public class DictionaryTests {
 		assertTrue(dictionary.isWord("limes") == true);
 	}
 	
+	
 	/**
-	 * Test failure for bogus words
+	 * Test a for word that is longer than the longest in the dictionary.
+	 */
+	@Test
+	public void testWordTooLong() {
+		assertTrue(dictionary.isWord("abcdefghi") == false);		
+	}
+	
+	
+	/**
+	 * Test for word lengths with no words
+	 */
+	@Test
+	public void testWordSetGap() {
+		assertTrue(dictionary.isWord("a") == false);
+		assertTrue(dictionary.isWord("abcdef") == false);
+	}
+	
+		
+	/**
+	 * Test for a word that is not in a word set.
 	 */
 	@Test
 	public void testIsWordFalse() {
-		assertTrue(dictionary.isWord("asdfad") == false);
-		assertTrue(dictionary.isWord("oiuvblha") == false);
-		assertTrue(dictionary.isWord("lnvuau") == false);
+		assertTrue(dictionary.isWord("sixsi") == false);
+		assertTrue(dictionary.isWord("lo") == false);
 	}
-		
+	
+	
 	/**
 	 * Test that the first and last words in the dictionary are found.
 	 */

@@ -3,24 +3,51 @@ package core;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 
 /**
- * This class represents a dictionary as a serchable array of strings.
- * The words are sorted in an ascending order so that binary search algorithn
- * can be used for faster searching.
-
+ * This class represents a dictionary of words as a an iterable, searchable set
+ * of Strings. The words are stored in two different data structures. One is as
+ * a sorted list in ascending order, that can be iterated over. The second is
+ * as a length hashed sorted list of words, optimized for searching.
+ * 
  * @author Steve
  *
  */
-public final class Dictionary {
-	private String[] words;
+public final class Dictionary implements Iterable<String>  {
+	private class SortedDictionaryIterator implements Iterator<String> {
+		int index = 0;
+		
+		@Override
+		public boolean hasNext() {
+			return (index < sortedDictionary.length) ? true : false;
+		}
+
+		@Override
+		public String next() {
+			return sortedDictionary[index++];
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+	}
+	
+	private String[] sortedDictionary;
+	private String[][] indexedDictionary;
 
 	
 	/**
-	 * A constructor to create a serachable dictionary from the given file. The
+	 * A constructor to create a searchable dictionary from the given file. The
 	 * given file must contain one word per line and also be sorted in
 	 * ascending order. 
 	 * 
@@ -28,7 +55,8 @@ public final class Dictionary {
 	 * @throws FileNotFoundException if the file can't be found.
 	 */
 	public Dictionary(String filename) throws FileNotFoundException {
-		words = readDictionary(filename);
+		sortedDictionary = newDictionary(filename);
+		indexedDictionary = newIndexDictionary(sortedDictionary);
 	}
 
 	
@@ -40,8 +68,17 @@ public final class Dictionary {
 	 * @return true, if it exists. false otherwise.
 	 */
 	public boolean isWord(String word) {
-		// return (Arrays.binarySearch(words, word) >= 0) ? true : false;
-		return iterativeBinarySearch(word);
+		int index = word.length() - 1;
+		if (index >= indexedDictionary.length || indexedDictionary[index] == null) {
+			return false;
+		}
+		return (Arrays.binarySearch(indexedDictionary[word.length() - 1], word) >= 0) ? true : false;
+	}
+
+	
+	@Override
+	public Iterator<String> iterator() {
+		return new SortedDictionaryIterator();
 	}
 
 	
@@ -55,46 +92,53 @@ public final class Dictionary {
 	 * @throws FileNotFoundException if the file can't be found in the
 	 * underlying file system.
 	 */
-	private String[] readDictionary(String filename) throws FileNotFoundException {
-		LinkedList<String> wordList = new LinkedList<String>();
+	private String[] newDictionary(String filename) throws FileNotFoundException {
+		TreeSet<String> wordArray = new TreeSet<String>();
 		
 		Scanner fileIn = new Scanner(new BufferedReader(new FileReader(filename)));
 		
 		while (fileIn.hasNext() == true) {
-			wordList.add(fileIn.next());
+			wordArray.add(fileIn.next());
 		}
 		if (fileIn != null) {
 			fileIn.close();
 		}
-		return wordList.toArray(new String[wordList.size()]);
+		
+		return wordArray.toArray(new String[wordArray.size()]);
 	}
 	
 	
 	/**
-	 * My implementation of an iterative binary search before I realised that
-	 * java.util.Arrays has a static binarySearch method.
+	 * Creates a hashed, then sorted list of words from the given input. Words
+	 * are hashed on their length and then sorted in ascending order.
 	 * 
-	 * @param word to search in dictionary.
-	 * @return true if found, false otherwise.
-	 */
-	private boolean iterativeBinarySearch(String word) {
-		int min = 0;
-		int max = words.length - 1;
-		int mid;
-		int compare;
-		
-		while ( min <= max) {
-			mid = (min + max) / 2;
-			compare = word.compareTo(words[mid]);
-			if (compare == 0) {
-				return true;
-			} else if (compare < 0) {
-				max = mid - 1;
-			} else {
-				min = mid + 1;
+	 * @param wordArray a list of unique sorted words
+	 * @return a hashed, then sorted list of words
+	 */	
+	private String[][] newIndexDictionary(String[] wordArray) {
+		TreeMap<Integer, ArrayList<String>> dictionary = new TreeMap<Integer, ArrayList<String>>();
+		ArrayList<String> value;
+		int key;
+
+		// sort words by length, then alphabetically
+		for (String word : wordArray) {
+			key = word.length();
+			value = dictionary.get(key);
+			if (value == null) {
+				value = new ArrayList<String>(128);
+				dictionary.put(new Integer(key), value);
 			}
+			value.add(word);
 		}
-		return false;
+		
+		// convert to array
+		String[][] indexedDictionary = new String[dictionary.lastKey()][];
+		for (Map.Entry<Integer, ArrayList<String>> node : dictionary.entrySet()) {
+			int index = node.getKey().intValue() - 1;
+			ArrayList<String> words = node.getValue();
+			indexedDictionary[index] = words.toArray(new String[words.size()]);
+		}
+		return indexedDictionary; 
 	}
-	
+
 }
