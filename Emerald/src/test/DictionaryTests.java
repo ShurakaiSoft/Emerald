@@ -65,4 +65,28 @@ public class DictionaryTests {
 		assertTrue(dictionary.isWord("zyzzyvas") == true);
 	}
 	
+	
+	/**
+	 * Verify hasVowels detects all vowels and no constants.
+	 */
+	@Test
+	public void testHasVowels() {
+		assertTrue(Dictionary.hasVowels("a") == true);
+		assertTrue(Dictionary.hasVowels("e") == true);
+		assertTrue(Dictionary.hasVowels("i") == true);
+		assertTrue(Dictionary.hasVowels("o") == true);
+		assertTrue(Dictionary.hasVowels("u") == true);
+		assertTrue(Dictionary.hasVowels("y") == true);
+		assertTrue(Dictionary.hasVowels("Y") == true);
+		assertTrue(Dictionary.hasVowels("A") == true);
+		assertTrue(Dictionary.hasVowels("E") == true);
+		assertTrue(Dictionary.hasVowels("I") == true);
+		assertTrue(Dictionary.hasVowels("O") == true);
+		assertTrue(Dictionary.hasVowels("U") == true);
+		assertTrue(Dictionary.hasVowels("Y") == true);
+		assertTrue(Dictionary.hasVowels("bcdfghjklmnpqrstvwxz") == false);
+		assertTrue(Dictionary.hasVowels("BCDFGHJKLMNPQRSTVWXZ") == false);
+		assertTrue(Dictionary.hasVowels("") == false);
+	}
+
 }

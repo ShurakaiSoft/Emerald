@@ -13,5 +13,3 @@ or perhaps a thread pool.
 
 * Modify the permutation list to only add letter sets that contain at least one
 vowel.
-
-* Move the vowel checker from the Controller class to the Dictionary class.

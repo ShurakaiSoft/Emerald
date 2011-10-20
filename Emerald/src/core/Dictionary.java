@@ -42,6 +42,9 @@ public final class Dictionary implements Iterable<String>  {
 		
 	}
 	
+	final static char[] VOWEL_LIST = { 'a', 'e', 'i', 'o', 'u', 'y' };
+
+	
 	private String[] sortedDictionary;
 	private String[][] indexedDictionary;
 
@@ -141,4 +144,25 @@ public final class Dictionary implements Iterable<String>  {
 		return indexedDictionary; 
 	}
 
+	
+	/**
+	 * Search string for vowels. If a vowel is present it will return true.
+	 * NOTE: vowels include 'a', 'e', 'i', 'o', 'u' AND 'y'. and can be upper
+	 * case or lower case.
+	 * 
+	 * @param letterSet to be searched
+	 * @return true if a vowel is present.
+	 */
+	public static boolean hasVowels(String letterSet) {
+		char[] data = letterSet.toLowerCase().toCharArray();
+		Arrays.sort(data);
+
+		for (char ch : VOWEL_LIST) {
+			if (Arrays.binarySearch(data, ch) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

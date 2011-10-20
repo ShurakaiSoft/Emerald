@@ -1,7 +1,6 @@
 package core;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 
 /**
  * This class ties all subsystems together<p>
@@ -16,7 +15,6 @@ import java.util.Arrays;
  *
  */
 public class Controller {
-	final static char[] VOWEL_LIST = { 'a', 'e', 'i', 'o', 'u', 'y' };
 	final static String DICTIONARY_FILENAME = "dictionary.txt";
 	
 	private Cache cache;
@@ -60,7 +58,7 @@ public class Controller {
 	 */
 	public String[] getAnswer(String letterSet) {		
 		// short circuit fail
-		if (hasVowels(letterSet) == false) {
+		if (Dictionary.hasVowels(letterSet) == false) {
 			return null;
 		}
 		
@@ -77,25 +75,4 @@ public class Controller {
 		return solution.getWordSet();
 	}
 
-	
-	/**
-	 * Search string for vowels. If a vowel is present it will return true.
-	 * NOTE: vowels include 'a', 'e', 'i', 'o', 'u' AND 'y'. and can be upper
-	 * case or lower case.
-	 * 
-	 * @param letterSet to be searched
-	 * @return true if a vowel is present.
-	 */
-	public static boolean hasVowels(String letterSet) {
-		char[] data = letterSet.toLowerCase().toCharArray();
-		Arrays.sort(data);
-
-		for (char ch : VOWEL_LIST) {
-			if (Arrays.binarySearch(data, ch) >= 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 }

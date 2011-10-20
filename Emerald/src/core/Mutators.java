@@ -4,13 +4,16 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * A class of static functions to recursively mutate strings.
+ * A noninstantiable class of static functions to recursively mutate strings.
  * 
- * @author Steve
+ * @author Steve 
  *
  */
-public class Mutators {
+public final class Mutators {
 	
+	// Suppress default constructor to force noninstantiablity
+	private Mutators() {
+	}
 	
 	/**
 	 * For a given String, will return a unique set of all permutations. Does 

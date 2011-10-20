@@ -38,28 +38,4 @@ public class ControllerTests {
 		assertTrue(Arrays.binarySearch(answer, "cab") >= 0);
 	}
 	
-	
-	/**
-	 * Verify hasVowels detects all vowels and no constants.
-	 */
-	@Test
-	public void testHasVowels() {
-		assertTrue(Controller.hasVowels("a") == true);
-		assertTrue(Controller.hasVowels("e") == true);
-		assertTrue(Controller.hasVowels("i") == true);
-		assertTrue(Controller.hasVowels("o") == true);
-		assertTrue(Controller.hasVowels("u") == true);
-		assertTrue(Controller.hasVowels("y") == true);
-		assertTrue(Controller.hasVowels("Y") == true);
-		assertTrue(Controller.hasVowels("A") == true);
-		assertTrue(Controller.hasVowels("E") == true);
-		assertTrue(Controller.hasVowels("I") == true);
-		assertTrue(Controller.hasVowels("O") == true);
-		assertTrue(Controller.hasVowels("U") == true);
-		assertTrue(Controller.hasVowels("Y") == true);
-		assertTrue(Controller.hasVowels("bcdfghjklmnpqrstvwxz") == false);
-		assertTrue(Controller.hasVowels("BCDFGHJKLMNPQRSTVWXZ") == false);
-		assertTrue(Controller.hasVowels("") == false);
-	}
-
 }
