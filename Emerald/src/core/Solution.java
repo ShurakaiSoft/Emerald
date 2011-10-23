@@ -1,7 +1,7 @@
 package core;
 
 /**
- * A simple class to store a set of letters and the corresponding set of valid
+ * A Value Class to store a set of letters and the corresponding set of valid
  * words that can be created from that set.<p>
  * 
  * This is an immutable class<p>
@@ -10,8 +10,8 @@ package core;
  * @author Steve
  *
  */
-public final class Solution {
-	private final String letterSet;	
+public final class Solution implements Comparable<Solution> {
+	private final String letterSet;
 	private final String[] wordSet; 
 	
 	
@@ -59,6 +59,14 @@ public final class Solution {
 	 */
 	public int getWordSetSize() {
 		return wordSet.length;
+	}
+
+
+	@Override
+	public int compareTo(Solution solution) {
+		// Since there exists only and only one valid wordSet for every 
+		// letterSet we can use letterSet's compareTo method.
+		return letterSet.compareTo(solution.letterSet);
 	}
 
 }
