@@ -4,6 +4,12 @@ For consistency all searches are performed with the string "qwertyuiop" on the
 same hardware under similar load. These figures are a rough guide only.
 
 
+Version 2.3
+Dictionary uses the previous hashed binary search. However the substring
+routine is optimized to create a unique list before permutations are generated
+and added to the results list.
+Time: around 3.6 seconds.
+
 Version 2.2
 Dictionary uses a hash table based on word length and a binary search on that 
 subset of words. Also the search space only mutates a string and it's

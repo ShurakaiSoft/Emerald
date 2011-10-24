@@ -9,7 +9,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	CacheTests.class,
 	ControllerTests.class,
 	DictionaryTests.class, 
-	MutationTests.class,
 	SolverTests.class,
 	UnsolvedTests.class
 })

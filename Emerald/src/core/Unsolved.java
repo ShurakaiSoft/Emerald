@@ -13,8 +13,8 @@ import java.util.TreeSet;
 public class Unsolved implements Runnable {
 	private static Dictionary dictionary = null;
 	
-	private final String identifier;		// sorted character array
-	private Set<String> mutationSet;		// sorted set
+	private final String letterSet;		// sorted character array
+	private Set<String> substrWordSet;		// sorted set
 	private Set<String> validWordSet;		// sorted set
 	private boolean doneSolving;			// flag 
 
@@ -25,8 +25,8 @@ public class Unsolved implements Runnable {
 	 * @param letterSet unique identifier for puzzle
 	 */
 	public Unsolved(String letterSet) {
-		this.identifier = sort(letterSet);
-		this.mutationSet = new TreeSet<String>();
+		this.letterSet = sort(letterSet);
+		this.substrWordSet = new TreeSet<String>();
 		this.validWordSet = new TreeSet<String>();
 		this.doneSolving = false;
 	}
@@ -62,7 +62,7 @@ public class Unsolved implements Runnable {
 	 * @return unique identifier
 	 */
 	public String getIdentifier() {
-		return identifier;
+		return letterSet;
 	}
 	
 	
@@ -88,13 +88,13 @@ public class Unsolved implements Runnable {
 		if (doneSolving == false) {
 			return null;
 		}
-		return new Solution(identifier, validWordSet.toArray(new String[validWordSet.size()]));
+		return new Solution(letterSet, validWordSet.toArray(new String[validWordSet.size()]));
 	}
 	
 	
 	@Override
 	public void run() {
-		addSubset(identifier);
+		addSubstrWord(letterSet);
 		getValidWords();
 		doneSolving = true;
 	}
@@ -110,30 +110,74 @@ public class Unsolved implements Runnable {
 			// XXX might be worth logging this unusual situation
 			return;
 		}
-		for (String string : mutationSet) {
-			if (dictionary.isWord(string) == true) {
-				validWordSet.add(string);
-			}
+		for (String string : substrWordSet) {
+			addValidWord("", string);
 		}		
 	}
 	
 	
 	/**
-	 * Recursively adds all mutations of a given string and all it's substrings
-	 * to the mutationSet if the string has at least one vowel.
+	 * Recursively adds all substrings given string to the subsetWordSet if the
+	 * string has at least one vowel and isn't already in the subsetWordSet.
 	 * 
 	 * @param string a set of letters
 	 */
-	private void addSubset(String string) {
-		if (Dictionary.hasVowels(string) == true) {
-			Mutators.mutate(mutationSet, string);
-			int strlen = string.length();
-			if (strlen > 1) {
-				for (int i = 1; i <= string.length(); i++) {
-					addSubset(Mutators.substrDelete(string, i));						
+	private void addSubstrWord(String string) {
+		substrWordSet.add(string);
+		int strlen = string.length();
+		if (strlen > 1) {
+			for (int i = 1; i <= string.length(); i++) {
+				String substr = deleteCharAt(string, i);
+				if ((Dictionary.hasVowels(substr) == true) && (substrWordSet.contains(substr) == false)) {
+					addSubstrWord(substr);
 				}
 			}
 		}
 	}
 	
+	
+	/**
+	 * Recursively finds all permutations of given input and adds them to the
+	 * validWordSet if they are verified in the dictionary.<p>
+	 * 
+	 * Initially the whole word will change, so the root will typically be a
+	 * null string and the variable will be the full set of letters.
+	 * 
+	 * @param root constant part of word or null string
+	 * @param variable changeable part of word
+	 */
+	private void addValidWord(String root, String variable) {
+		if (variable.length() <= 1) {
+			String word = root + variable;
+			if (dictionary.isWord(word) == true) {
+				validWordSet.add(word);
+			}
+		} else {
+			for (int i = 0; i < variable.length(); i++) {
+				String newString = variable.substring(0, i) + variable.substring(i + 1);
+				addValidWord(root + variable.charAt(i), newString);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Returns a string with the character at index removed.
+	 * 
+	 * @param string original string
+	 * @param index the character for deletion index. First character in the
+	 * original string is at 1.
+	 * @return modified string
+	 */
+	private static String deleteCharAt(String string, int index) {
+		if (index == 1) {
+			return string.substring(1);
+		}
+		int length = string.length(); 
+		if (index >= length) {
+			return string.substring(0, length - 1);
+		}
+		return string.substring(0, index - 1) + string.substring(index, length);
+	}
+
 }
