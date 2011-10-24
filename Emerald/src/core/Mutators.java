@@ -1,5 +1,6 @@
 package core;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -14,6 +15,7 @@ public final class Mutators {
 	// Suppress default constructor to force noninstantiablity
 	private Mutators() {
 	}
+
 	
 	/**
 	 * For a given String, will return a unique set of all permutations. Does 
@@ -27,6 +29,18 @@ public final class Mutators {
 		Set<String> result = new TreeSet<String>();
 		addMutation(result, "", seed);
 		return result.toArray(new String[result.size()]);
+	}
+	
+	
+	/**
+	 * For a given String, will add all permutations to the given set. Does not
+	 * add any substring permutations.
+	 * 
+	 * @param results Set for collecting the permutations
+	 * @param seed the set of letters to mutate.
+	 */
+	public static void mutate(Set<String> results, String seed) {
+		addMutation(results, "", seed);
 	}
 	
 	
@@ -90,10 +104,13 @@ public final class Mutators {
 	
 
 	/**
-	 * Return a string with the character at I removed
-	 * @return
+	 * Return a string with the character at index removed
+	 * 
+	 * @param string original string
+	 * @param index index to deleted char. First character is at 1.
+	 * @return modified string
 	 */
-	private static String substrDelete(String string, int index) {
+	public static String substrDelete(String string, int index) {
 		if (index == 1) {
 			return string.substring(1);
 		}

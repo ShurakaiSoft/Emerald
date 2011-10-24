@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,24 +48,28 @@ public class UnsolvedTests {
 
 	
 	/**
-	 * Uses a custom dictionary file that has all permutations of "abc", so we
-	 * can test that all permutations are being created properly
-	 *  
+	 * Tests that all permutations of a string and it's substrings have at
+	 * least one vowel in them.
+	 * 
+	 * Since there is no public access to this permutation set, this test
+	 * uses a modified dictionary that has entries for all permutations of
+	 * 'abc'. Therefore all permutations will be found in the dictionary and 
+	 * the Solution's word set returned by getWordSet() will contain the actual
+	 * permutation set.
+	 * 
 	 */
 	@Test
-	public void testAllMutations() {
+	public void testPermutationVowel() {
 		setDictionary(abcDictionary);
 		Unsolved unsolved = new Unsolved("abc");
 		unsolved.run();
 		Solution solution = unsolved.newSolution();
 		String[] answer = solution.getWordSet();
-		assertTrue(answer.length == 15);
-		assertTrue(answer[0].equals("a"));
-		assertTrue(answer[4].equals("acb"));
-		assertTrue(answer[5].equals("b"));
-		assertTrue(answer[9].equals("bca"));
-		assertTrue(answer[10].equals("c"));
-		assertTrue(answer[14].equals("cba"));
+		assertTrue(answer.length == 11);
+		assertTrue(Arrays.binarySearch(answer, "b") < 0);
+		assertTrue(Arrays.binarySearch(answer, "c") < 0);
+		assertTrue(Arrays.binarySearch(answer, "bc") < 0);
+		assertTrue(Arrays.binarySearch(answer, "cb") < 0);
 	}
 
 	

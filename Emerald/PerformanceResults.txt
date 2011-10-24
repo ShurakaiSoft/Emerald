@@ -4,6 +4,11 @@ For consistency all searches are performed with the string "qwertyuiop" on the
 same hardware under similar load. These figures are a rough guide only.
 
 
+Version 2.2
+Dictionary uses a hash table based on word length and a binary search on that 
+subset of words. Also the search space only mutates a string and it's
+substrings if the string contains at least one vowels.
+Time: around 1 minute 1 second.
 
 Version 2.1
 Dictionary uses a hash table based on word length and a binary search on that
@@ -15,7 +20,6 @@ Version 2.0
 This version used a binary search of the dictionary file with the same complete
 set of permutations as the original version.
 Time: around 1 minute and 8 seconds.
-
 
 Version 1
 The first functional version of this application. It uses a very simple linear

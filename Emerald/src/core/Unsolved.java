@@ -14,7 +14,7 @@ public class Unsolved implements Runnable {
 	private static Dictionary dictionary = null;
 	
 	private final String identifier;		// sorted character array
-	private String[] mutationSet;			// sorted set
+	private Set<String> mutationSet;		// sorted set
 	private Set<String> validWordSet;		// sorted set
 	private boolean doneSolving;			// flag 
 
@@ -26,9 +26,9 @@ public class Unsolved implements Runnable {
 	 */
 	public Unsolved(String letterSet) {
 		this.identifier = sort(letterSet);
-		mutationSet = null;
-		validWordSet = new TreeSet<String>();
-		doneSolving = false;
+		this.mutationSet = new TreeSet<String>();
+		this.validWordSet = new TreeSet<String>();
+		this.doneSolving = false;
 	}
 
 	
@@ -94,7 +94,7 @@ public class Unsolved implements Runnable {
 	
 	@Override
 	public void run() {
-		this.mutationSet = Mutators.mutateAll(identifier);
+		addSubset(identifier);
 		getValidWords();
 		doneSolving = true;
 	}
@@ -115,6 +115,25 @@ public class Unsolved implements Runnable {
 				validWordSet.add(string);
 			}
 		}		
+	}
+	
+	
+	/**
+	 * Recursively adds all mutations of a given string and all it's substrings
+	 * to the mutationSet if the string has at least one vowel.
+	 * 
+	 * @param string a set of letters
+	 */
+	private void addSubset(String string) {
+		if (Dictionary.hasVowels(string) == true) {
+			Mutators.mutate(mutationSet, string);
+			int strlen = string.length();
+			if (strlen > 1) {
+				for (int i = 1; i <= string.length(); i++) {
+					addSubset(Mutators.substrDelete(string, i));						
+				}
+			}
+		}
 	}
 	
 }
