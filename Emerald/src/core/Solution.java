@@ -64,7 +64,7 @@ public final class Solution implements Comparable<Solution> {
 
 	@Override
 	public int compareTo(Solution solution) {
-		// Since there exists only and only one valid wordSet for every 
+		// Since there exists one and only one valid wordSet for every 
 		// letterSet we can use letterSet's compareTo method.
 		return letterSet.compareTo(solution.letterSet);
 	}

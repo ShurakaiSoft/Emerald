@@ -1,0 +1,14 @@
+This file documents my finding on some rough performance testing.
+
+For consistency all searches are performed with the string "qwertyuiop" on the
+same hardware under similar load. These figures are a rough guide only.
+
+Version 2.1
+Uses hash table based on word length and a binary search on that subset of
+words in the dictionary.
+Time: around 1 minute and 5 seconds.
+
+Version 1
+Used a linear search of the dictionary file against a complete set of
+permutations if the search string and all substrings.
+Time = around 52 minutes.
