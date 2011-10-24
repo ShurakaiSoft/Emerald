@@ -3,12 +3,22 @@ This file documents my finding on some rough performance testing.
 For consistency all searches are performed with the string "qwertyuiop" on the
 same hardware under similar load. These figures are a rough guide only.
 
+
+
 Version 2.1
-Uses hash table based on word length and a binary search on that subset of
-words in the dictionary.
+Dictionary uses a hash table based on word length and a binary search on that
+subset of words. The search space was the same complete set of permutations as
+the previous version. 
 Time: around 1 minute and 5 seconds.
 
+Version 2.0
+This version used a binary search of the dictionary file with the same complete
+set of permutations as the original version.
+Time: around 1 minute and 8 seconds.
+
+
 Version 1
-Used a linear search of the dictionary file against a complete set of
-permutations if the search string and all substrings.
-Time = around 52 minutes.
+The first functional version of this application. It uses a very simple linear
+search of the dictionary file. The search space was a complete set of
+permutations of the search string and all it's substrings.
+Time = around 55 minutes.

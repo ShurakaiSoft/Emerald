@@ -31,6 +31,7 @@ public class Performance {
 			System.exit(-1);
 		}
 	}
+
 	
 	/**
 	 * Return a string that shows elapsed time in a human readable format with
@@ -44,7 +45,7 @@ public class Performance {
 		long milliseconds = elapsedTime % 1000;
 		long seconds = (elapsedTime / 1000) % 60;
 		long minutes = (elapsedTime / 60000) % 60;
-		long hours = (elapsedTime / 360000);
+		long hours = (elapsedTime / 3600000);
 		boolean hasHigherOrder = false;
 		
 		if (hours != 0) {
@@ -86,6 +87,7 @@ public class Performance {
 		
 		return time.toString();
 	}
+
 	
 	/**
 	 * A method to keep all output together. It solves the problem and prints
