@@ -61,6 +61,16 @@ public final class Solution implements Comparable<Solution> {
 		return wordSet.length;
 	}
 
+	
+	@Override
+	public boolean equals(Object o) {
+		return letterSet.equals(((Solution) o).letterSet);
+	}
+	
+	@Override
+	public int hashCode() {
+		return letterSet.hashCode();
+	}
 
 	@Override
 	public int compareTo(Solution solution) {

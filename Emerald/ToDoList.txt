@@ -1,6 +1,9 @@
 The ToDo list.
 
 
+* Create a more responsive UI by farming out the work in the solver to a 
+different thread.
+
 * Allow the TextUI to be interactive and non-interactive so that it could be 
 used in scripts.
 
@@ -11,5 +14,3 @@ or perhaps a thread pool.
 
 * Add a gui user interface.
 
-* Modify the permutation list to only add letter sets that contain at least one
-vowel.

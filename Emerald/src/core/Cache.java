@@ -1,44 +1,43 @@
 package core;
 
+import java.util.TreeMap;
+
 /**
- * This is a dummy cache class that only caches one solution. Used for testing.
+ * Implements an in memory cache. There is no limit to the size of the cache,
+ * beyond the limits of hardware.
  * 
  * @author Steve
  *
  */
-public class Cache {
-	Solution solution;  // temporary cache, for testing.	
+public final class Cache {
+	private TreeMap<String, String[]> cachedData;
 
 	
 	/**
-	 * Construct an empty cache
+	 * Construct an empty cache.
 	 */
 	public Cache() {
-		solution = null;
+		cachedData = new TreeMap<String, String[]>(); 
 	}
 	
 	
 	/**
-	 * Add a new solution to the cache
+	 * Add a new solution to the cache.
 	 * 
-	 * @param solution
+	 * @param solution 
 	 */
 	public void addSolution(Solution solution) {
-		this.solution = solution; 
+		cachedData.put(solution.getLetterSet(), solution.getWordSet());
 	}
 
 	
 	/**
-	 * return the solution
+	 * return the solution.
 	 * 
-	 * @return
+	 * @return An array of words
 	 */
 	public String[] getAnswer(String letterSet) {
-		if (solution != null && solution.getLetterSet().equals(letterSet) == true) {
-			return solution.getWordSet();
-		} else {
-			return null;
-		}
+		return cachedData.get(letterSet);
 	}
 	
 }
