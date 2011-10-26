@@ -1,16 +1,27 @@
 The ToDo list.
 
 
-* Create a more responsive UI by farming out the work in the solver to a 
-different thread.
+TextUI
+* Create a more responsive UI by not sleeping while waiting for an answer
+* Add options for sorting and displaying answers 
 
-* Allow the TextUI to be interactive and non-interactive so that it could be 
-used in scripts.
+Dictionary
+* Modify it to allow multiple readers but one writer.
 
-* Enhance the Controller to be able to handle multiple asynchronous requests.
+Controller
+* Find a more elegant solution to the Solver deadlock problem.
 
-* Enhance the Solver to solve multiple problems asynchronously by using threads
-or perhaps a thread pool.  
+Solver
+* Should probably create its own thread for run() rather than depending on
+some other class to create the thread. Might keep it more self contained.
 
-* Add a gui user interface.
+Unsolved
+* Class needs a clean up and redesign to simplify its interface.
+* Consider removing Runnable interface since it's not currently used that way.
+* Use cache to speed up answers to substring queries, and record substrings in
+cache for later use.
 
+Extensions
+* Add an Android GUI.
+* Add fixed characters
+* Add random characters

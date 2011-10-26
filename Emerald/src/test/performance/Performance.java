@@ -2,8 +2,10 @@ package test.performance;
 
 import java.io.FileNotFoundException;
 
+import core.Cache;
 import core.Solution;
 import core.Solver;
+import core.Unsolved;
 
 /**
  * A class to run some rough performance tests to get an idea of the
@@ -22,7 +24,7 @@ public class Performance {
 		String problem = "qwertyuiop";
 
 		try {
-			solver = new Solver("dictionary.txt");
+			solver = new Solver(new Cache(), "dictionary.txt");
 			
 			printResults(solver, problem);
 			
@@ -103,11 +105,15 @@ public class Performance {
 		
 		System.out.format("Start solving '%s'%n", problem);
 		startTime = System.currentTimeMillis();
-		solution = solver.getSolution(problem);
+		solution = solver.solve(new Unsolved(problem));
 		elapsedTime = System.currentTimeMillis() - startTime;
-		System.out.format("Finished.%n");
-		System.out.format("Words found: %d%n", solution.getWordSetSize());
-		System.out.format("Time taken: %s%n", Performance.time(elapsedTime));
+		if (solution != null) {
+			System.out.format("Finished.%n");
+			System.out.format("Words found: %d%n", solution.getWordSetSize());
+			System.out.format("Time taken: %s%n", Performance.time(elapsedTime));
+		} else {
+			System.out.println("No Solution.");
+		}
 	}
 
 }

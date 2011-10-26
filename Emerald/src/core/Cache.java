@@ -3,8 +3,13 @@ package core;
 import java.util.TreeMap;
 
 /**
- * Implements an in memory cache. There is no limit to the size of the cache,
- * beyond the limits of hardware.
+ * Implements a synchronized in-memory cache. There is no limit to the size of
+ * the cache, beyond the limits of hardware.<p>
+ * 
+ * This version of synchronization is rather simple. Only one thread is allowed
+ * to access the cache at a time, thus only one reader can access the cache.<p>
+ * 
+ * Future implementations will address this issue.<p>
  * 
  * @author Steve
  *
@@ -26,7 +31,7 @@ public final class Cache {
 	 * 
 	 * @param solution 
 	 */
-	public void addSolution(Solution solution) {
+	public synchronized void addSolution(Solution solution) {
 		cachedData.put(solution.getLetterSet(), solution.getWordSet());
 	}
 
@@ -36,7 +41,7 @@ public final class Cache {
 	 * 
 	 * @return An array of words
 	 */
-	public String[] getAnswer(String letterSet) {
+	public synchronized String[] getAnswer(String letterSet) {
 		return cachedData.get(letterSet);
 	}
 	

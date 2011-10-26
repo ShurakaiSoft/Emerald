@@ -27,11 +27,18 @@ public class TextUI {
 				return;
 			}
 			input = Unsolved.sort(input.toLowerCase());
-			answer = controller.getAnswer(input);
-			if (answer == null) {
+			if (Dictionary.hasVowels(input) == false) {
 				System.out.println("No Vowel! Valid words have at least one vowel.");
-				System.out.println("Add a vowel and try again.");
+				System.out.println("Add a vowel and try again.");				
 			} else {
+				while ((answer = controller.getAnswer(input)) == null) {
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// wake up and continue
+					}
+				}
 				displayResults(input, answer);
 			}
 		}		

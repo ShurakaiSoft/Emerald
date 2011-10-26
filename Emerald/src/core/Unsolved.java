@@ -10,7 +10,7 @@ import java.util.TreeSet;
  * @author Steve
  *
  */
-public class Unsolved implements Runnable {
+public final class Unsolved implements Runnable {
 	private static Dictionary dictionary = null;
 	
 	private final String letterSet;		// sorted character array
