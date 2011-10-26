@@ -18,7 +18,6 @@ public class Controller {
 	private Cache cache;
 	private Solver solver;
 	private String dictionaryName;
-	private Thread solverThread;
 	
 	
 	/**
@@ -40,8 +39,6 @@ public class Controller {
 			this.dictionaryName = dictionaryName;
 			cache = new Cache();
 			solver = new Solver(this.cache, this.dictionaryName);
-			solverThread = new Thread(solver);
-			solverThread.start();
 		} catch (FileNotFoundException e) {
 			System.out.println("Missing dictionary file: " + this.dictionaryName);
 			System.exit(-1);

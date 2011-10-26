@@ -9,15 +9,44 @@ import java.io.FileNotFoundException;
  * the solution is being calculated.<p> 
  * 
  * The second method uses the requestWordSet() and getSolution() pair along with
- * a thread to do the heavy lifting in the run method.<p> This uses a buffer to
- * store problems and solutions until the run method is ready to process them.
+ * a thread to do the heavy lifting. The thread is managed internally by this
+ * class.
  * 
  * @author Steve
  *
  */
-public final class Solver implements Runnable {
+public final class Solver {
+	/**
+	 * Inner Thread class. 
+	 */
+	private class SolverThread extends Thread {
+		Solver solver;
+		public SolverThread(Solver solver) {
+			this.solver = solver;
+		}
+		@Override
+		public void run() {
+			while (true) {
+				if (unsolved != null && solution == null) {
+					Solution temp = solve(new Unsolved(unsolved));
+					cache.addSolution(temp);
+					synchronized (solver) {
+						solution = temp;
+						unsolved = null;
+					}
+				} else {
+					try {
+						Thread.sleep(500); // XXX this should be a wait but I get an IllegalMonitorStateException
+					} catch (InterruptedException e) {
+						// wake up and check the queue for more problems.
+					}
+				}
+			}
+		}		
+	}
 	private Dictionary dictionary;	
-	private Cache cache;			
+	private Cache cache;
+	private SolverThread solverThread;
 
 	private String unsolved;		// unsolved buffer
 	private Solution solution;		// solved buffer
@@ -33,8 +62,10 @@ public final class Solver implements Runnable {
 		this.cache = cache;
 		dictionary = new Dictionary(dictionaryFilename);
 		Unsolved.setDictionary(dictionary);
+		solverThread = new SolverThread(this);
 		this.solution = null;
 		this.unsolved = null;
+		solverThread.start();
 	}
 	
 	
@@ -85,32 +116,5 @@ public final class Solver implements Runnable {
 		unsolved.run();
 		return unsolved.newSolution();
 	}
-	
-	
-	/**
-	 * This is an infinite loop that checks the unsolved problems. If it is
-	 * non-empty, it will solve the problem and add the solution to the
-	 * solved problems queue, space permitting. It will also add the solution
-	 * to the cache.
-	 */
-	@Override
-	public void run() {
-		while (true) {
-			if (unsolved != null && solution == null) {
-				Solution temp = solve(new Unsolved(unsolved));
-				cache.addSolution(temp);
-				synchronized (this) {
-					solution = temp;
-					unsolved = null;
-				}
-			} else {
-				try {
-					Thread.sleep(500); // XXX this should be a wait but I get an IllegalMonitorStateException
-				} catch (InterruptedException e) {
-					// wake up and check the queue for more problems.
-				}
-			}
-		}
-	}
-
+		
 }

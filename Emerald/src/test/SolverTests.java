@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 public class SolverTests {
 	private String[] letterSets = { "adfs", "eqrtwy", "iopu", "abc", "abcd" };
 	private Solver solver;
-	Thread solverThread;
 
 	
 	/**
@@ -24,7 +23,6 @@ public class SolverTests {
 	@Before
 	public void setUp() throws FileNotFoundException {
 		solver = new Solver(new Cache(), "dictionary.txt");
-		solverThread = new Thread(solver);
 	}
 	
 	
@@ -47,6 +45,7 @@ public class SolverTests {
 	@Test
 	public void testRequestWordSetFull() {
 		assertTrue(solver.requestWordSet("asdf") == true);
+		solver.requestWordSet("abcd"); // this could be true or false depending on threading
 		assertTrue(solver.requestWordSet("qwerty") == false);
 	}
 	
@@ -56,7 +55,6 @@ public class SolverTests {
 	 */
 	@Test(timeout=5000)
 	public void testGetWordSet() {
-		solverThread.start();
 		assertTrue(solver.requestWordSet("asdf") == true);
 		Solution solution = null;
 		while (true) {
@@ -72,9 +70,8 @@ public class SolverTests {
 	/**
 	 * Test we can get several solutions.
 	 */
-	@Test(timeout=25000)
+	@Test(timeout=10000)
 	public void testSeveralSolutions() {
-		solverThread.start();
 		Solution solution;
 		for (String letterSet : letterSets) {
 			while (solver.requestWordSet(letterSet) == true) {
@@ -92,9 +89,8 @@ public class SolverTests {
 	 * Add two problems and then test we can get the first before the second is
 	 * overwritten. 
 	 */
-	@Test(timeout=10000)
+	@Test(timeout=5000)
 	public void testSolutionNeverLost() {
-		solverThread.start();
 		assertTrue(solver.requestWordSet(letterSets[0]) == true);
 		while (solver.requestWordSet(letterSets[1]) == false) {
 			// keep trying for requestWordSet to return true

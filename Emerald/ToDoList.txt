@@ -11,10 +11,6 @@ Dictionary
 Controller
 * Find a more elegant solution to the Solver deadlock problem.
 
-Solver
-* Should probably create its own thread for run() rather than depending on
-some other class to create the thread. Might keep it more self contained.
-
 Unsolved
 * Class needs a clean up and redesign to simplify its interface.
 * Consider removing Runnable interface since it's not currently used that way.
