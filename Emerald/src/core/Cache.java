@@ -1,28 +1,36 @@
 package core;
 
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 /**
- * Implements a synchronized in-memory cache. There is no limit to the size of
- * the cache, beyond the limits of hardware.<p>
+ * Implements a Generic, synchronized, in-memory cache. The maximum size of this
+ * cache is set by the constructor.<p>
  * 
- * This version of synchronization is rather simple. Only one thread is allowed
- * to access the cache at a time, thus only one reader can access the cache.<p>
- * 
- * Future implementations will address this issue.<p>
+ * Synchronization allows only one thread to access the cache at a time. There
+ * is no distinction between readers and writers.
  * 
  * @author Steve
  *
  */
-public final class Cache {
-	private TreeMap<String, String[]> cachedData;
+public final class Cache<K, V> {
+	private LinkedHashMap<K, V> cachedData;
+	private final int capacity;
 
 	
 	/**
 	 * Construct an empty cache.
 	 */
-	public Cache() {
-		cachedData = new TreeMap<String, String[]>(); 
+	public Cache(int cacheSize) {
+		this.capacity = cacheSize;
+		cachedData = new LinkedHashMap<K, V>(capacity) {
+			private static final long serialVersionUID = 100L;
+			@Override
+			protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+		        return size() > capacity;
+		     }
+		}; 
 	}
 	
 	
@@ -31,8 +39,8 @@ public final class Cache {
 	 * 
 	 * @param solution 
 	 */
-	public synchronized void addSolution(Solution solution) {
-		cachedData.put(solution.getLetterSet(), solution.getWordSet());
+	public synchronized void store(K key, V value) {
+		cachedData.put(key, value);
 	}
 
 	
@@ -41,7 +49,7 @@ public final class Cache {
 	 * 
 	 * @return An array of words
 	 */
-	public synchronized String[] getAnswer(String letterSet) {
+	public synchronized V retreive(K letterSet) {
 		return cachedData.get(letterSet);
 	}
 	

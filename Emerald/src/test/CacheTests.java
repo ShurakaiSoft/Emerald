@@ -8,21 +8,21 @@ import core.Cache;
 import core.Solution;
 
 public class CacheTests {
-	Cache emptyCache = new Cache();
-	Cache nonEmptyCache = new Cache();
+	Cache<String, Solution> emptyCache = new Cache<String, Solution>(20);
+	Cache<String, Solution> nonEmptyCache = new Cache<String, Solution>(20);
 	String[] answer = {"ab", "cab" };
 	Solution solution = new Solution("abc", answer);
 	
 	@Before
 	public void setUpNonEmptyCache() {
-		nonEmptyCache.addSolution(solution);
+		nonEmptyCache.store(solution.getLetterSet(), solution);
 	}
 	
 	@Test
 	public void testGetAnswer() {
-		assertTrue(emptyCache.getAnswer("abc") == null);
-		assertTrue(nonEmptyCache.getAnswer("def") == null);
-		String[] answer = nonEmptyCache.getAnswer("abc");
+		assertTrue(emptyCache.retreive("abc") == null);
+		assertTrue(nonEmptyCache.retreive("def") == null);
+		String[] answer = nonEmptyCache.retreive("abc").getWordSet();
 		assertTrue(answer != null);
 		assertTrue(answer[0].equals("ab") == true);
 		assertTrue(answer[1].equals("cab") == true);

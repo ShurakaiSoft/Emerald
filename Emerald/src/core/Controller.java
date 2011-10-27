@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 public class Controller {
 	final static String DICTIONARY_FILENAME = "dictionary.txt";
 	
-	private Cache cache;
+	private Cache<String, Solution> cache;
 	private Solver solver;
 	private String dictionaryName;
 	
@@ -37,7 +37,7 @@ public class Controller {
 	public Controller(String dictionaryName) {
 		try {
 			this.dictionaryName = dictionaryName;
-			cache = new Cache();
+			cache = new Cache<String, Solution>(4096);
 			solver = new Solver(this.cache, this.dictionaryName);
 		} catch (FileNotFoundException e) {
 			System.out.println("Missing dictionary file: " + this.dictionaryName);
@@ -70,8 +70,9 @@ public class Controller {
 		}
 		
 		// Check cache. If it already exists, return answer.
-		String[] answer = cache.getAnswer(letterSet); 
-		if (answer != null) {
+		Solution solution = cache.retreive(letterSet);
+		if (solution != null) {
+			String[] answer = solution.getWordSet(); 
 			return answer;
 		}
 				

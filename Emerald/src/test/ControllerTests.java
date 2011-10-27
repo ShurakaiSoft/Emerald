@@ -42,7 +42,7 @@ public class ControllerTests {
 	/**
 	 * Test that we can repeatedly get an answer from the controller.
 	 */
-	@Test(timeout=25000)
+	@Test(timeout=10000)
 	public void testMultipleAnswers() {
 		for (String letterSet : letterSets) {
 			String[] answer = getAnswerHelper(letterSet);

@@ -24,7 +24,7 @@ public class Performance {
 		String problem = "qwertyuiop";
 
 		try {
-			solver = new Solver(new Cache(), "dictionary.txt");
+			solver = new Solver(new Cache<String, Solution>(8192), "dictionary.txt");
 			
 			printResults(solver, problem);
 			

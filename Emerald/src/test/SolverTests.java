@@ -22,7 +22,7 @@ public class SolverTests {
 	 */
 	@Before
 	public void setUp() throws FileNotFoundException {
-		solver = new Solver(new Cache(), "dictionary.txt");
+		solver = new Solver(new Cache<String, Solution>(20), "dictionary.txt");
 	}
 	
 	
@@ -33,7 +33,7 @@ public class SolverTests {
 	 */
 	@Test(expected=FileNotFoundException.class)
 	public void testConstructor() throws FileNotFoundException {
-		solver = new Solver(new Cache(), "");
+		solver = new Solver(new Cache<String, Solution>(20), "");
 	}
 	
 	

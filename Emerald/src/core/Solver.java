@@ -29,7 +29,7 @@ public final class Solver {
 			while (true) {
 				if (unsolved != null && solution == null) {
 					Solution temp = solve(new Unsolved(unsolved));
-					cache.addSolution(temp);
+					cache.store(temp.getLetterSet(), temp);
 					synchronized (solver) {
 						solution = temp;
 						unsolved = null;
@@ -45,7 +45,7 @@ public final class Solver {
 		}		
 	}
 	private Dictionary dictionary;	
-	private Cache cache;
+	private Cache<String, Solution> cache;
 	private SolverThread solverThread;
 
 	private String unsolved;		// unsolved buffer
@@ -58,7 +58,7 @@ public final class Solver {
 	 * @param dictionaryFilename name of the dictionary file.
 	 * @throws FileNotFoundException if the system can't find the given file
 	 */
-	public Solver(Cache cache, String dictionaryFilename) throws FileNotFoundException {
+	public Solver(Cache<String, Solution> cache, String dictionaryFilename) throws FileNotFoundException {
 		this.cache = cache;
 		dictionary = new Dictionary(dictionaryFilename);
 		Unsolved.setDictionary(dictionary);
