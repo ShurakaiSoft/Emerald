@@ -4,6 +4,13 @@ For consistency all searches are performed with the string "qwertyuiop" on the
 same hardware under similar load. These figures are a rough guide only.
 
 
+
+Version 3.1
+Changed Solution to use Collection instead of an array. The TreeMap in the
+Problem class is copied to the List in the Solution, so it takes a little
+longer to get an answer.
+Time: around 3.9 seconds.
+
 Version 3.0
 No specific optimizations in this version were aimed at improving the search
 time however there was a small and measurable improvement.

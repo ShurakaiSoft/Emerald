@@ -1,6 +1,8 @@
 package core;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class ties all other classes together<p>
@@ -18,6 +20,7 @@ public class Controller {
 	private Cache<String, Solution> cache;
 	private Solver solver;
 	private String dictionaryName;
+	private String currentProblem;
 	
 	
 	/**
@@ -25,6 +28,7 @@ public class Controller {
 	 */
 	public Controller() {
 		this(DICTIONARY_FILENAME);
+		currentProblem = null;
 	}
 
 
@@ -63,22 +67,24 @@ public class Controller {
 	 * then an empty set is returned. A null is returned if the return value is
 	 * not yet ready.
 	 */
-	public String[] getAnswer(String letterSet) {		
+	public List<String> getAnswer(String letterSet) {		
 		// short circuit fail
 		if (Dictionary.hasVowels(letterSet) == false) {
-			return new String[0];
+			return new ArrayList<String>(0);
 		}
 		
 		// Check cache. If it already exists, return answer.
 		Solution solution = cache.retreive(letterSet);
 		if (solution != null) {
-			String[] answer = solution.getWordSet(); 
-			return answer;
+			currentProblem = null;
+			return solution.getWordSet();
 		}
 				
-		// ask the solver to add to the cache.
-		while ((solver.requestSolution(letterSet)) == false) {
-			// keep trying to add the request.
+		if (currentProblem == null) {
+			currentProblem = letterSet;
+			if (solver.requestSolution(letterSet) == false) {
+				throw new IllegalStateException();
+			}
 		}
 		return null;
 	}

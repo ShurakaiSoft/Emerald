@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,8 +24,8 @@ public class ControllerTests {
 	 */
 	@Test
 	public void testNoVowelFails() {
-		String[] answer = controller.getAnswer("bcd");
-		assertTrue(answer.length == 0);
+		List<String> answer = controller.getAnswer("bcd");
+		assertTrue(answer.size() == 0);
 	}
 
 	
@@ -34,8 +34,8 @@ public class ControllerTests {
 	 */
 	@Test(timeout=5000)
 	public void testSingleAnswer() {
-		String[] answer = getAnswerHelper("abc");
-		assertTrue(Arrays.binarySearch(answer, "cab") >= 0);
+		List<String> answer = getAnswerHelper("abc");
+		assertTrue(answer.contains("cab") == true);
 	}
 
 	
@@ -45,8 +45,8 @@ public class ControllerTests {
 	@Test(timeout=10000)
 	public void testMultipleAnswers() {
 		for (String letterSet : letterSets) {
-			String[] answer = getAnswerHelper(letterSet);
-			assertTrue(answer.length > 0);
+			List<String> answer = getAnswerHelper(letterSet);
+			assertTrue(answer.size() > 0);
 		}
 	}
 	
@@ -57,8 +57,8 @@ public class ControllerTests {
 	 * @param letterSet set of letters
 	 * @return set of words
 	 */
-	public String[] getAnswerHelper(String letterSet) {
-		String[] wordSet = null;
+	public List<String> getAnswerHelper(String letterSet) {
+		List<String> wordSet = null;
 		while ((wordSet = controller.getAnswer(letterSet)) == null) {
 			// loop until we get an answer
 		}

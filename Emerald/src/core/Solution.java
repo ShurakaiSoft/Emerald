@@ -1,5 +1,9 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * A Value Class to store a set of letters and the corresponding set of valid
  * words that can be created from that set.<p>
@@ -12,7 +16,7 @@ package core;
  */
 public final class Solution implements Comparable<Solution> {
 	private final String letterSet;
-	private final String[] wordSet; 
+	private final List<String> wordSet; 
 	
 	
 	/**
@@ -21,12 +25,10 @@ public final class Solution implements Comparable<Solution> {
 	 * @param letterSet the letterSet.
 	 * @param wordSet the wordSet.
 	 */
-	public Solution(String letterSet, String[] wordSet) {
+	public Solution(String letterSet, Collection<String> wordSet) {
 		this.letterSet = letterSet;
-		if (wordSet == null) {
-			wordSet = new String[0];
-		}
-		this.wordSet = wordSet;
+		this.wordSet = new ArrayList<String>(wordSet.size());
+		this.wordSet.addAll(wordSet);
 	}
 	
 	
@@ -45,7 +47,7 @@ public final class Solution implements Comparable<Solution> {
 	 * 
 	 * @return the wordSet
 	 */
-	public String[] getWordSet() {
+	public List<String> getWordSet() {
 		return wordSet;
 	}
 	
@@ -58,7 +60,7 @@ public final class Solution implements Comparable<Solution> {
 	 * @see getWordSet
 	 */
 	public int getWordSetSize() {
-		return wordSet.length;
+		return wordSet.size();
 	}
 
 	

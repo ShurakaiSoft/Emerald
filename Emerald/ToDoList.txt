@@ -2,18 +2,13 @@ The ToDo list.
 
 
 TextUI
-* Create a more responsive UI by not sleeping while waiting for an answer
-* Add options for sorting and displaying answers 
+* Add option to sort results
+* Add option to filter results by length, or characters in special places.
 
 Dictionary
 * Modify it to allow multiple readers but one writer.
 
-Controller
-* Find a more elegant solution to the Solver deadlock problem.
-
 Unsolved
-* Class needs a clean up and redesign to simplify its interface.
-* Consider removing Runnable interface since it's not currently used that way.
 * Use cache to speed up answers to substring queries, and record substrings in
 cache for later use.
 

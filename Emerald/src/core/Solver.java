@@ -105,7 +105,6 @@ public final class Solver {
 	 * @return the solution.
 	 */
 	public Solution solve(Problem problem) {
-		problem.solve();
 		return problem.solve();
 	}
 		

@@ -3,7 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,12 +53,12 @@ public class ProblemTests {
 		Problem unsolved = new Problem("abc");
 		unsolved.solve();
 		Solution solution = unsolved.solve();
-		String[] answer = solution.getWordSet();
-		assertTrue(answer.length == 11);
-		assertTrue(Arrays.binarySearch(answer, "b") < 0);
-		assertTrue(Arrays.binarySearch(answer, "c") < 0);
-		assertTrue(Arrays.binarySearch(answer, "bc") < 0);
-		assertTrue(Arrays.binarySearch(answer, "cb") < 0);
+		List<String> answer = solution.getWordSet();
+		assertTrue(answer.size() == 11);
+		assertTrue(answer.contains("b") == false);
+		assertTrue(answer.contains("c") == false);
+		assertTrue(answer.contains("bc") == false);
+		assertTrue(answer.contains("cb") == false);
 	}
 
 	
@@ -75,12 +75,10 @@ public class ProblemTests {
 		cbaUnsolved.solve();
 		Solution abcSolution = abcUnsolved.solve();
 		Solution cbaSolution = cbaUnsolved.solve();
-		String[] abcAnswer = abcSolution.getWordSet();
-		String[] cbaAnswer = cbaSolution.getWordSet();
-		assertTrue(abcAnswer.length == cbaAnswer.length);
-		for (int i = 0; i < abcAnswer.length; i++) {
-			assertTrue(abcAnswer[i].equals(cbaAnswer[i]));
-		}
+		List<String> abcAnswer = abcSolution.getWordSet();
+		List<String> cbaAnswer = cbaSolution.getWordSet();
+		assertTrue(abcAnswer.size() == cbaAnswer.size());
+		assertTrue(abcAnswer.containsAll(cbaAnswer) == true);
 	}
 	
 	

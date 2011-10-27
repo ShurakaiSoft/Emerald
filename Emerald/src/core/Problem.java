@@ -46,7 +46,7 @@ public final class Problem {
 	public Solution solve() {
 		addSubstrWord(letterSet);
 		getValidWords();
-		return new Solution(letterSet, validWordSet.toArray(new String[validWordSet.size()]));
+		return new Solution(letterSet, validWordSet);
 	}
 	
 	
