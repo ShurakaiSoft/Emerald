@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import core.Cache;
 import core.Solution;
 import core.Solver;
-import core.Unsolved;
+import core.Problem;
 
 /**
  * A class to run some rough performance tests to get an idea of the
@@ -105,7 +105,7 @@ public class Performance {
 		
 		System.out.format("Start solving '%s'%n", problem);
 		startTime = System.currentTimeMillis();
-		solution = solver.solve(new Unsolved(problem));
+		solution = solver.solve(new Problem(problem));
 		elapsedTime = System.currentTimeMillis() - startTime;
 		if (solution != null) {
 			System.out.format("Finished.%n");

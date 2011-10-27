@@ -1,6 +1,5 @@
 package core;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -10,13 +9,12 @@ import java.util.TreeSet;
  * @author Steve
  *
  */
-public final class Unsolved implements Runnable {
+public final class Problem {
 	private static Dictionary dictionary = null;
 	
-	private final String letterSet;		// sorted character array
-	private Set<String> substrWordSet;		// sorted set
+	private final String letterSet;			// sorted character array
+	private Set<String> substringSet;		// sorted set
 	private Set<String> validWordSet;		// sorted set
-	private boolean doneSolving;			// flag 
 
 	
 	/**
@@ -24,11 +22,10 @@ public final class Unsolved implements Runnable {
 	 * 
 	 * @param letterSet unique identifier for puzzle
 	 */
-	public Unsolved(String letterSet) {
-		this.letterSet = sort(letterSet);
-		this.substrWordSet = new TreeSet<String>();
+	public Problem(String letterSet) {
+		this.letterSet = Dictionary.sort(letterSet);
+		this.substringSet = new TreeSet<String>();
 		this.validWordSet = new TreeSet<String>();
-		this.doneSolving = false;
 	}
 
 	
@@ -39,64 +36,17 @@ public final class Unsolved implements Runnable {
 	 * @param dictionary new dictionary object to use.
 	 */
 	public static void setDictionary(Dictionary dictionary) {
-		Unsolved.dictionary = dictionary;
+		Problem.dictionary = dictionary;
 	}
 	
 	
 	/**
-	 * Returns a string of letters in ascending order.
-	 * 
-	 * @param letterSet original String
-	 * @return sorted String
+	 * Find a solution to this problem.
 	 */
-	public static String sort(String letterSet) {
-		char[] data = letterSet.toCharArray();
-		Arrays.sort(data);
-		return new String(data);
-	}
-
-	
-	/**
-	 * Get a string that uniquely identifies this unsolved problem.
-	 *  
-	 * @return unique identifier
-	 */
-	public String getIdentifier() {
-		return letterSet;
-	}
-	
-	
-	/**
-	 * When solved returns true, it is safe to read the solution by calling
-	 * newSolution.
-	 * 
-	 * @return true when safe to call newSolution.
-	 */
-	public boolean solved() {
-		return doneSolving;
-	}
-	
-	
-	/**
-	 * This method will return an solution to the problem identified by 
-	 * getIdentifier as an instance of Solution, if the solution has been 
-	 * solved. If the solution has not yet been solved, it will return null.
-	 *  
-	 * @return the answer in an instance of Solution or null if not yet ready.
-	 */
-	public Solution newSolution() {
-		if (doneSolving == false) {
-			return null;
-		}
-		return new Solution(letterSet, validWordSet.toArray(new String[validWordSet.size()]));
-	}
-	
-	
-	@Override
-	public void run() {
+	public Solution solve() {
 		addSubstrWord(letterSet);
 		getValidWords();
-		doneSolving = true;
+		return new Solution(letterSet, validWordSet.toArray(new String[validWordSet.size()]));
 	}
 	
 	
@@ -110,7 +60,7 @@ public final class Unsolved implements Runnable {
 			// XXX might be worth logging this unusual situation
 			return;
 		}
-		for (String string : substrWordSet) {
+		for (String string : substringSet) {
 			addValidWord("", string);
 		}		
 	}
@@ -123,12 +73,12 @@ public final class Unsolved implements Runnable {
 	 * @param string a set of letters
 	 */
 	private void addSubstrWord(String string) {
-		substrWordSet.add(string);
+		substringSet.add(string);
 		int strlen = string.length();
 		if (strlen > 1) {
 			for (int i = 1; i <= string.length(); i++) {
 				String substr = deleteCharAt(string, i);
-				if ((Dictionary.hasVowels(substr) == true) && (substrWordSet.contains(substr) == false)) {
+				if ((Dictionary.hasVowels(substr) == true) && (substringSet.contains(substr) == false)) {
 					addSubstrWord(substr);
 				}
 			}

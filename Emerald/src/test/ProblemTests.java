@@ -10,9 +10,9 @@ import org.junit.Test;
 
 import core.Dictionary;
 import core.Solution;
-import core.Unsolved;
+import core.Problem;
 
-public class UnsolvedTests {
+public class ProblemTests {
 	
 	
 	private static Dictionary dictionary;		// normal dictionary
@@ -37,17 +37,6 @@ public class UnsolvedTests {
 
 	
 	/**
-	 * Test that getting a solution before it has been solved, fails. 
-	 */
-	@Test
-	public void testGetSolutoinEarly() {
-		Unsolved unsolved = new Unsolved("abc");
-		Solution solution = unsolved.newSolution();
-		assertTrue(solution == null	);
-	}
-
-	
-	/**
 	 * Tests that all permutations of a string and it's substrings have at
 	 * least one vowel in them.
 	 * 
@@ -61,9 +50,9 @@ public class UnsolvedTests {
 	@Test
 	public void testPermutationVowel() {
 		setDictionary(abcDictionary);
-		Unsolved unsolved = new Unsolved("abc");
-		unsolved.run();
-		Solution solution = unsolved.newSolution();
+		Problem unsolved = new Problem("abc");
+		unsolved.solve();
+		Solution solution = unsolved.solve();
 		String[] answer = solution.getWordSet();
 		assertTrue(answer.length == 11);
 		assertTrue(Arrays.binarySearch(answer, "b") < 0);
@@ -80,12 +69,12 @@ public class UnsolvedTests {
 	@Test
 	public void testMutationSetConsistancy() {
 		setDictionary(dictionary);
-		Unsolved abcUnsolved = new Unsolved("abc");
-		Unsolved cbaUnsolved = new Unsolved("cba");
-		abcUnsolved.run();
-		cbaUnsolved.run();
-		Solution abcSolution = abcUnsolved.newSolution();
-		Solution cbaSolution = cbaUnsolved.newSolution();
+		Problem abcUnsolved = new Problem("abc");
+		Problem cbaUnsolved = new Problem("cba");
+		abcUnsolved.solve();
+		cbaUnsolved.solve();
+		Solution abcSolution = abcUnsolved.solve();
+		Solution cbaSolution = cbaUnsolved.solve();
 		String[] abcAnswer = abcSolution.getWordSet();
 		String[] cbaAnswer = cbaSolution.getWordSet();
 		assertTrue(abcAnswer.length == cbaAnswer.length);
@@ -102,6 +91,6 @@ public class UnsolvedTests {
 	 * @param dictionary
 	 */
 	private void setDictionary(Dictionary dictionary) {
-		Unsolved.setDictionary(dictionary);		
+		Problem.setDictionary(dictionary);		
 	}
 }

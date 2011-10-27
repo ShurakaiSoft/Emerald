@@ -27,11 +27,11 @@ public final class Solver {
 		@Override
 		public void run() {
 			while (true) {
-				if (unsolved != null && solution == null) {
-					Solution temp = solve(new Unsolved(unsolved));
+				if (unsolved != null) {
+					Problem problem = new Problem(unsolved);
+					Solution temp = problem.solve();
 					cache.store(temp.getLetterSet(), temp);
 					synchronized (solver) {
-						solution = temp;
 						unsolved = null;
 					}
 				} else {
@@ -49,7 +49,6 @@ public final class Solver {
 	private SolverThread solverThread;
 
 	private String unsolved;		// unsolved buffer
-	private Solution solution;		// solved buffer
 	
 
 	/**
@@ -61,9 +60,8 @@ public final class Solver {
 	public Solver(Cache<String, Solution> cache, String dictionaryFilename) throws FileNotFoundException {
 		this.cache = cache;
 		dictionary = new Dictionary(dictionaryFilename);
-		Unsolved.setDictionary(dictionary);
+		Problem.setDictionary(dictionary);
 		solverThread = new SolverThread(this);
-		this.solution = null;
 		this.unsolved = null;
 		solverThread.start();
 	}
@@ -78,7 +76,7 @@ public final class Solver {
 	 * @return false if queue is full, true otherwise.
 	 * @see run
 	 */
-	public boolean requestWordSet(String letterSet) {
+	public boolean requestSolution(String letterSet) {
 		synchronized (this) {
 			if (unsolved != null) {
 				return false;
@@ -87,20 +85,14 @@ public final class Solver {
 		}
 		return true;
 	}
-		
-	
+
 	/**
-	 * Return the head of the solutions queue or null if it is empty. 
+	 * Returns true if the solver thread is currently solving a problem.
 	 * 
-	 * @return a instance of a Solution object or null if the queue is empty.
+	 * @return True if busy, false otherwise.
 	 */
-	public Solution getSolution() {
-		Solution temp = null;
-		synchronized (this) { 
-			temp = solution;
-			solution = null;
-		}
-		return temp;
+	public boolean isBusy() {
+		return (unsolved != null) ? true : false;
 	}
 	
 	
@@ -112,9 +104,9 @@ public final class Solver {
 	 * @param unsolved the Unsolved problem
 	 * @return the solution.
 	 */
-	public Solution solve(Unsolved unsolved) {
-		unsolved.run();
-		return unsolved.newSolution();
+	public Solution solve(Problem problem) {
+		problem.solve();
+		return problem.solve();
 	}
 		
 }

@@ -26,7 +26,7 @@ public class TextUI {
 			if (input.equals("-q")) {
 				return;
 			}
-			input = Unsolved.sort(input.toLowerCase());
+			input = Dictionary.sort(input.toLowerCase());
 			if (Dictionary.hasVowels(input) == false) {
 				System.out.println("No Vowel! Valid words have at least one vowel.");
 				System.out.println("Add a vowel and try again.");				

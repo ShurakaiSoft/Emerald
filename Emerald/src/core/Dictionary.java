@@ -165,4 +165,17 @@ public final class Dictionary implements Iterable<String>  {
 		return false;
 	}
 	
+	
+	/**
+	 * Returns a sorted string of lower case letters.
+	 * 
+	 * @param letterSet original String
+	 * @return sorted lower case string
+	 */
+	public static String sort(String letterSet) {
+		char[] data = letterSet.toLowerCase().toCharArray();
+		Arrays.sort(data);
+		return new String(data);
+	}
+
 }

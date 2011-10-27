@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ControllerTests.class,
 	DictionaryTests.class, 
 	SolverTests.class,
-	UnsolvedTests.class
+	ProblemTests.class
 })
 public class RunAllTests {
 }

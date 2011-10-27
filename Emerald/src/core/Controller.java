@@ -76,12 +76,8 @@ public class Controller {
 			return answer;
 		}
 				
-		// XXX Clear the solution queue in the solver to prevent deadlock. 
-		// Need to find a more elegant solution to this problem 
-		solver.getSolution();
-		
 		// ask the solver to add to the cache.
-		while ((solver.requestWordSet(letterSet)) == false) {
+		while ((solver.requestSolution(letterSet)) == false) {
 			// keep trying to add the request.
 		}
 		return null;
