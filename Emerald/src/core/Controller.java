@@ -63,21 +63,22 @@ public class Controller {
 	 * ready.<p> 
 	 * 
 	 * @param letterSet set of letters
-	 * @return set of valid words. If the given set of letters forms no words,
-	 * then an empty set is returned. A null is returned if the return value is
-	 * not yet ready.
+	 * @return An instance of Solution representing the answer or null if the
+	 * answer is not yet available.
 	 */
-	public List<String> getAnswer(String letterSet) {		
+	public Solution getAnswer(String letterSet) {
+		Dictionary.sort(letterSet);  // verify sorted.
+		
 		// short circuit fail
 		if (Dictionary.hasVowels(letterSet) == false) {
-			return new ArrayList<String>(0);
+			return new Solution(letterSet, new ArrayList<String>(0));
 		}
 		
 		// Check cache. If it already exists, return answer.
 		Solution solution = cache.retreive(letterSet);
 		if (solution != null) {
 			currentProblem = null;
-			return solution.getWordSet();
+			return solution;
 		}
 				
 		if (currentProblem == null) {

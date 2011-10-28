@@ -8,7 +8,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	CacheTests.class,
 	ControllerTests.class,
-	DictionaryTests.class, 
+	DictionaryTests.class,
+	ResultsTests.class,
 	SolverTests.class,
 	ProblemTests.class
 })

@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import core.Controller;
+import core.Solution;
 
 public class ControllerTests {
 	String[] letterSets = { "ehllo", "abc", "adfs", "eqrtwy", "iopu" };
@@ -24,8 +25,8 @@ public class ControllerTests {
 	 */
 	@Test
 	public void testNoVowelFails() {
-		List<String> answer = controller.getAnswer("bcd");
-		assertTrue(answer.size() == 0);
+		Solution answer = controller.getAnswer("bcd");
+		assertTrue(answer.getWordSetSize() == 0);
 	}
 
 	
@@ -58,11 +59,11 @@ public class ControllerTests {
 	 * @return set of words
 	 */
 	public List<String> getAnswerHelper(String letterSet) {
-		List<String> wordSet = null;
-		while ((wordSet = controller.getAnswer(letterSet)) == null) {
+		Solution answer = null;
+		while ((answer = controller.getAnswer(letterSet)) == null) {
 			// loop until we get an answer
 		}
-		return wordSet;
+		return answer.getWordSet();
 	}
 	
 }

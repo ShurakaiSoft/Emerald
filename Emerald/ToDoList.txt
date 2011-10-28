@@ -2,15 +2,14 @@ The ToDo list.
 
 
 TextUI
-* Add option to sort results
-* Add option to filter results by length, or characters in special places.
+* add ability to have multiple flags and a search string on one line.
+
+Results
+* Add options to sort by score
+* Add options to include board tiles
 
 Dictionary
 * Modify it to allow multiple readers but one writer.
-
-Unsolved
-* Use cache to speed up answers to substring queries, and record substrings in
-cache for later use.
 
 Extensions
 * Add an Android GUI.
