@@ -6,12 +6,10 @@ TextUI
 
 Results
 * Add options to sort by score
-* Add options to include board tiles
 
 Dictionary
 * Modify it to allow multiple readers but one writer.
 
 Extensions
 * Add an Android GUI.
-* Add fixed characters
 * Add random characters

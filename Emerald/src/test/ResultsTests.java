@@ -14,7 +14,7 @@ import core.Solution;
 
 public class ResultsTests {
 	static Solution adfsSolution;
-	Results results;
+	Results adfsResults;
 	
 	
 	@BeforeClass
@@ -34,7 +34,7 @@ public class ResultsTests {
 	
 	@Before
 	public void setUp() throws Exception {
-		results = new Results(adfsSolution);
+		adfsResults = new Results(adfsSolution);
 	}
 
 	
@@ -45,7 +45,7 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testDefaultAllResults() {
-		List<String> words = results.getSortedResults();
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.size() == adfsSolution.getWordSetSize());
 	}
 	
@@ -55,8 +55,8 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testAFewResults() {
-		results.setMaxResults(3);
-		List<String> words = results.getSortedResults();
+		adfsResults.setMaxResults(3);
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.size() == 3);
 	}
 	
@@ -66,8 +66,8 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testZeroResults() {
-		results.setMaxResults(0);
-		List<String> words = results.getSortedResults();
+		adfsResults.setMaxResults(0);
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.size() == 0);	
 	}
 	
@@ -79,8 +79,8 @@ public class ResultsTests {
 	@Test
 	public void testRequestBiggerThanActual() {
 		int maxWords = adfsSolution.getWordSetSize();
-		results.setMaxResults(maxWords + 1);
-		List<String> words = results.getSortedResults();
+		adfsResults.setMaxResults(maxWords + 1);
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.size() == maxWords);	
 	}
 	
@@ -90,8 +90,8 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testAscendingLength() {
-		results.sortByWordLengthAsc();
-		List<String> words = results.getSortedResults();
+		adfsResults.sortByWordLengthAsc();
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.get(0).equals("ad"));
 		assertTrue(words.get(7).equals("fads"));
 	}
@@ -102,8 +102,8 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testDescendingLength() {
-		results.sortByWordLengthDesc();
-		List<String> words = results.getSortedResults();
+		adfsResults.sortByWordLengthDesc();
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.get(0).equals("fads"));
 		assertTrue(words.get(7).equals("fa"));
 	}
@@ -114,12 +114,81 @@ public class ResultsTests {
 	 */
 	@Test
 	public void testRevertingToDefaultSorting() {
-		results.sortByWordLengthAsc();
-		results.sortByWordLengthDesc();
-		results.sortByDefault();
-		List<String> words = results.getSortedResults();
+		adfsResults.sortByWordLengthAsc();
+		adfsResults.sortByWordLengthDesc();
+		adfsResults.sortByDefault();
+		List<String> words = adfsResults.getSortedResults();
 		assertTrue(words.get(0).equals("ad"));
 		assertTrue(words.get(7).equals("sad"));	
 	}
 	
+	
+	/**
+	 * Test filtering will return the correct subset of words.
+	 */
+	@Test
+	public void testFilter() {
+		adfsResults.addFilter(1, 'a', 1);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 6);
+		assertTrue(words.contains("fads") == false);
+		assertTrue(words.contains("ads") == false);
+	}
+	
+	
+	/**
+	 * Test filtering with a different filter returns a different subset of
+	 * words.
+	 */
+	@Test
+	public void testFilterLong() {
+		adfsResults.addFilter(2, 'd', 1);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 5);
+		assertTrue(words.contains("ad") == true);
+		assertTrue(words.contains("ads") == true);
+		assertTrue(words.contains("fad") == true);
+		assertTrue(words.contains("fads") == true);
+		assertTrue(words.contains("sad") == true);	
+	}
+	
+	
+	/**
+	 * Test filtering with no random leading characters.
+	 */
+	@Test
+	public void testFilterStartsWithZero() {
+		adfsResults.addFilter(0, 's', 3);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 1);
+		assertTrue(words.contains("sad") == true);
+	}
+	
+	
+	/**
+	 * Test filtering with no random trailing characters.
+	 */
+	@Test
+	public void testFilterEndsWithZero() {
+		adfsResults.addFilter(2, 's', 0);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 3);
+		assertTrue(words.contains("ads") == true);
+		assertTrue(words.contains("as") == true);		
+		assertTrue(words.contains("fas") == true);
+	}
+	
+	
+	/**
+	 * Test removing a filter returns the full set of words.
+	 */
+	@Test
+	public void testFilterRemoved() {
+		adfsResults.addFilter(1, 'a', 1);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 6);
+		adfsResults.removeFilter();
+		words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 8);
+	}
 }

@@ -126,6 +126,39 @@ public class TextUI {
 	
 	
 	/**
+	 * Add board information to filter results
+	 */
+	private void addBoardInfo(String input) {
+		char ch;
+		int i = 0;
+		while (i < input.length()) {
+			ch = Character.toLowerCase(input.charAt(i));
+			if (ch == '*') {
+				i++;
+			} else if (ch >= 'a' && ch <= 'z') {
+				int trailing = (input.length() - 1) - i;
+				results.addFilter(i, ch, trailing);
+				System.out.format("Added filter: %d%c%d%n", i, ch, trailing);
+				return;
+			} else {
+				break;
+			}
+		}
+		System.out.println("Board Format Syntax error!");
+		System.out.println("zero or more '*'s followed by one lower case letter, followed by zero or more '*'s.");		
+	}
+	
+	
+	/**
+	 * Remove board information filter.
+	 */
+	private void removeBoardInfo() {
+		results.removeFilter();
+		System.out.println("Removed Filter.");
+	}
+	
+	
+	/**
 	 * This method processes an input command and calls the relevant method
 	 * that handles that type of command.
 	 * 
@@ -135,6 +168,12 @@ public class TextUI {
 		switch (input.charAt(0)) {
 		case '-':
 			switch(input.charAt(1)) {
+			case 'b':
+				addBoardInfo(input.substring(2));
+				break;
+			case 'B':
+				removeBoardInfo();
+				break;	
 			case 'h':
 			case 'H':
 				help();
@@ -172,6 +211,10 @@ public class TextUI {
 	 */
 	private void help() {
 		System.out.println("Command  Details");
+		System.out.println(" -bxxx   Add filter xxx.");
+		System.out.println("         0-7 '*' + board Letter + 0-7 '*'");		
+		System.out.println("         eg. ***d**");		
+		System.out.println(" -B      Delete the filter."); 
 		System.out.println(" -h      Display this message.");
 		System.out.println(" -l      Display last results.");
 		System.out.println(" -nxxx   Set xx number of words to be displayd.");

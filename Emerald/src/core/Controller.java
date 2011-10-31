@@ -2,13 +2,12 @@ package core;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class ties all other classes together<p>
  * 
  * It receives sets of letters and provides sets of words. <p>
- *
+ * 
  * It now handles requests asynchronously through the getAnswer() method.
  *
  * @author Steve
