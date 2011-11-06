@@ -1,248 +1,313 @@
 package core;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * A simple interactive text user interface.
+ * A simple text user interface. It can be run from the command line or
+ * interactively. When run from the command line it accepts and processes input
+ * from command line options. If no options are given it will start an
+ * interactive session. This session can be terminated with the "-q" flag.
  * 
  * @author Steve
- *
+ * 
  */
 public class TextUI {
-	private Controller controller = new Controller();
-	private Results results = new Results(new Solution("", new ArrayList<String>(0)));
-	private boolean quit = false;
+	private final Controller controller;
+	private final Results results;
+	private boolean quit;
 
 	
 	/**
-	 * The main loop.
+	 * Private constructor
 	 */
-	public void run() {
-		Scanner keyboard = new Scanner(System.in);
-		String input;
-		
-		while (quit == false) {
-			System.out.print("Enter string: ");
-			input = keyboard.next();
-			processInput(input);
-		}		
+	private TextUI() {
+		controller = new Controller();
+		results = new Results(new Solution("", new ArrayList<String>(0)));
+		quit = false;
 	}
-
+	
 	
 	/**
-	 * Start an interactive application
+	 * Main application entry point. Command line arguments are optional. If no
+	 * command line options are given, it will start an interactive session.<p>
 	 * 
-	 * @param args not used
+	 * Using "-q" will terminate the interactive session.<p>
+	 * 
+	 * @param args from the command line. 
 	 */
 	public static void main(String[] args) {
-		TextUI textui = new TextUI();
+		TextUI app = new TextUI();
 		
-		textui.run();
-		System.out.println("Terminated at users request.");		
+		if (args.length > 0) {
+			app.processCommandSet(args);
+		} else {
+			app.interactive();
+		}
 	}
+	
 
+	/**
+	 * Repeatedly prompts for a set of commands from the user. It will process
+	 * these commands and display the results. It also checks for a termination
+	 * condition.
+	 */
+	private void interactive() {
+		BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+		
+		while (true) {
+			System.out.print("Enter Command: ");
+			try {
+				processCommandSet(tokenizeInput(keyboard.readLine()));
+				if (quit == true) {
+					System.out.println("Terminated at users request.");
+					System.exit(0);
+				}
+			} catch (IOException e) {
+				System.err.println("An IO Error Occured. " + e.getMessage());
+				System.exit(1);
+			}
+		}		
+	}
+	
 	
 	/**
-	 * Sets the number of rows displayed to the integer value of the given
-	 * String. If there are any errors from the conversion, a message will be
-	 * displayed to standard out and no fields will be changed.
+	 * Tokenize the input string using white space as the separator.
 	 * 
-	 * @param number number as a string.
+	 * @param input the String to be tokenized.
+	 * @return a set of tokens.
 	 */
-	private void setRowNumber(String stringNumber) {
-		if (stringNumber.equals("all") == true) {
-			results.setMaxResults(Results.ALL_WORDS);
+	private static String[] tokenizeInput(String input) {
+		ArrayList<String> tokens = new ArrayList<String>(8);
+		
+		Scanner inputScanner = new Scanner(input);
+		while (inputScanner.hasNext()) {
+			tokens.add(inputScanner.next());
+		}
+		return tokens.toArray(new String[tokens.size()]);
+	}
+	
+	
+	/**
+	 * Given a set of String arguments representing commands, it will process
+	 * each command and display the results, if any.
+	 * 
+	 * Flags and parameters always come before a set of letters. Any flags or
+	 * options after a set of letters will be ignored.
+	 * 
+	 * @param commands the set of commands to process.
+	 * 
+	 */
+	private void processCommandSet(String[] commands) {
+		if (commands.length == 0) {
+			printHelp();
 			return;
 		}
-		try {
-			int number = Integer.valueOf(stringNumber);
-			if (number > 0) {
-				System.out.format("Now displaying %d results%n", number);
-				results.setMaxResults(number);
+		for (int i = 0; i < commands.length; i++) {
+			if (commands[i].equals("-f") == true) {
+				if (++i < commands.length) {
+					processFilterFlag(commands[i]);
+				} else {
+					System.out.println("Missing argument to -f flag");
+					printHelp();
+				}
+			} else if (commands[i].equals("-h") == true) {
+				printHelp();
+			} else if (commands[i].equals("-n") == true) {
+				if (++i < commands.length) {
+					processDisplayFlag(commands[i]);
+				} else {
+					System.out.println("Missing argument to -n flag");
+					printHelp();
+					return;
+				}
+			} else if (commands[i].equals("-q") == true) {
+				quit = false;
+				return;
+			} else if (commands[i].equals("-r") == true) {
+				displayWords();
+			} else if (commands[i].equals("-s") == true) {
+				if (++i < commands.length) {
+					processSortFlag(commands[i]);
+				} else {
+					System.out.println("Missing argument to -s flag");
+					printHelp();
+				}
+			} else if (commands[i].charAt(0) != '-') {
+				String input = Dictionary.sort(commands[i]);
+				if (Dictionary.hasVowels(input) == false) {
+					System.out.println("No Vowel! Valid words must hava at least one vowel.");
+					System.out.println("Add a vowel and try again.");
+					return;
+				}
+				getWords(input);
+				return;
+			} else {
+				System.out.format("Invalid command or option: %s%n", commands[i]);
+				printHelp();
+				return;
 			}
-		} catch (NumberFormatException e) {
-			System.out.format("Invalid number: %s%n", stringNumber);
 		}
 	}
 	
 	
 	/**
-	 * Display a set of valid words for the given input string.
+	 * Given a set of letters as a String, it will display to standard out a
+	 * set of words that conform with the requested filter, sort method and
+	 * word count size.<p>
 	 * 
-	 * @param input
+	 * This method prints a string of "progress dots" to standard out while it
+	 * is processing the request.
+	 * 
+	 * @param input the set of letters.
 	 */
 	private void getWords(String input) {
 		System.out.print("Searching.");
-		input = Dictionary.sort(input.toLowerCase());
-		if (Dictionary.hasVowels(input) == false) {
-			System.out.println("No Vowel! Valid words have at least one vowel.");
-			System.out.println("Add a vowel and try again.");				
-		} else {
-			Solution solution = null;
-			while ((solution = controller.getAnswer(input)) == null) {
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					// wake up and continue
-				}
-				System.out.print(".");
+		Solution solution = null;
+		while ((solution = controller.getAnswer(input)) == null) {
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// XXX don't know what to do here...
 			}
-			results.setSolution(solution);
-			System.out.println();
-			displayWords();
+			System.out.print(".");	// progress dots
 		}
+		System.out.println();		// new line for progress dots
+		results.setSolution(solution);
+		displayWords();
 	}
 	
 	
 	/**
-	 * sort words based on length
-	 */
-	private void sortBy(String input) {
-		switch (input.charAt(0)) {
-		case 'a':
-		case 'A':
-			results.sortByDefault();
-			System.out.println("Sorting by default method.");
-			displayWords();
-			break;
-		case 'l':
-			results.sortByWordLengthAsc();
-			System.out.println("Sorting by ascending length.");
-			displayWords();			
-			break;
-		case 'L':
-			results.sortByWordLengthDesc();
-			System.out.println("Sorting by descending length.");
-			displayWords();
-			break;
-		default:
-			System.out.format("Invalid sort option: %s", input);
-			help();
-		break;
-		}
-	}
-	
-	
-	/**
-	 * Add board information to filter results
-	 */
-	private void addBoardInfo(String input) {
-		char ch;
-		int i = 0;
-		while (i < input.length()) {
-			ch = Character.toLowerCase(input.charAt(i));
-			if (ch == '*') {
-				i++;
-			} else if (ch >= 'a' && ch <= 'z') {
-				int trailing = (input.length() - 1) - i;
-				results.addFilter(i, ch, trailing);
-				System.out.format("Added filter: %d%c%d%n", i, ch, trailing);
-				return;
-			} else {
-				break;
-			}
-		}
-		System.out.println("Board Format Syntax error!");
-		System.out.println("zero or more '*'s followed by one lower case letter, followed by zero or more '*'s.");		
-	}
-	
-	
-	/**
-	 * Remove board information filter.
-	 */
-	private void removeBoardInfo() {
-		results.removeFilter();
-		System.out.println("Removed Filter.");
-	}
-	
-	
-	/**
-	 * This method processes an input command and calls the relevant method
-	 * that handles that type of command.
-	 * 
-	 * @param input input string to be processed.
-	 */
-	private void processInput(String input) {
-		switch (input.charAt(0)) {
-		case '-':
-			switch(input.charAt(1)) {
-			case 'b':
-				addBoardInfo(input.substring(2));
-				break;
-			case 'B':
-				removeBoardInfo();
-				break;	
-			case 'h':
-			case 'H':
-				help();
-				break;
-			case 'l':
-			case 'L':
-				displayWords();
-				break;
-			case 'n':
-			case 'N':
-				setRowNumber(input.substring(2));
-				break;
-			case 'q':
-			case 'Q':
-				quit = true;
-				break;
-			case 's':
-			case 'S':
-				sortBy(input.substring(2));
-				break;
-			default:
-				System.out.format("Invalid command: %s%n", input);
-				break;
-			}
-			break;
-		default:
-			getWords(input);
-			break;
-		}
-	}
-
-	
-	/**
-	 * Display the interactive command line message.
-	 */
-	private void help() {
-		System.out.println("Command  Details");
-		System.out.println(" -bxxx   Add filter xxx.");
-		System.out.println("         0-7 '*' + board Letter + 0-7 '*'");		
-		System.out.println("         eg. ***d**");		
-		System.out.println(" -B      Delete the filter."); 
-		System.out.println(" -h      Display this message.");
-		System.out.println(" -l      Display last results.");
-		System.out.println(" -nxxx   Set xx number of words to be displayd.");
-		System.out.println(" -nall   Set all words to be displayed.");
-		System.out.println(" -q      Quit.");
-		System.out.println(" -sl     Sort by word length, shortest frist.");
-		System.out.println(" -sL     Sort by word length, longest first.");
-		System.out.println(" -sa     Sort by alphabetical order.");
-		System.out.println(" -sz     Sort by reverse alphabetical order.");		
-		// System.out.println(""); 
-	}
-	
-	
-	/**
-	 * Display the results from a query.
-	 * 
-	 * @param input original letter set.
-	 * @param words set of valid words.
+	 * Display to standard out the most recently returned set of results, 
+	 * formatted with the current filter, sort method and word count size.
 	 */
 	private void displayWords() {
 		List<String> words = results.getSortedResults();
 		if (words.size() == 0) {
-			System.out.println("No results to display.");
+			System.out.println("NO results to display.");
 		} else {
-			for (String word : results.getSortedResults()) {
+			for (String word : words) {
 				System.out.println(word);
 			}
 		}
+	}
+	
+	
+	/**
+	 * Adds a filter to the results. Only words that match the filter are
+	 * displayed.<p>
+	 * 
+	 * <b>Filter Syntax</b><p>
+	 * The filter format is zero or more '*'s followed by one 'char' followed
+	 * by zero or more '*'s. The '*' represents an optional letter and the
+	 * 'char' represents the location of the fixed board character. 
+	 * 
+	 * @param filter the board filter.
+	 */
+	private void processFilterFlag(String filter) {
+		if (filter.equals("none") == true) {
+			System.out.println("Removing board filter.");
+			results.removeFilter();
+			return;
+		}
+		char ch;
+		int i = 0;
+		while (i < filter.length()) {
+			ch = Character.toLowerCase(filter.charAt(i));
+			if (ch == '*') {
+				i++;
+			} else if(ch >= 'a' && ch <= 'z') {
+				int trailing = (filter.length() - 1) - i;
+				System.out.format("Added filter: %d%c%d%n", i, ch, trailing);
+				results.addFilter(i,  ch, trailing);
+				return;				
+			} else {
+				break;
+			}
+		}
+		System.out.println("Board filter syntax error!");
+		System.out.println("0 or more '*'s followed by 1 lower case character, followed by 0 or more stars.");
+	}
+	
+	
+	/**
+	 * Sets the number of words to display. If the string "all" is given it 
+	 * will display all results. Otherwise it will convert the given input into
+	 * a number and use it to determine the number of words to display.<p>
+	 * 
+	 * If there are any errors in the conversion process, an error message is
+	 * printed to standard out.
+	 * 
+	 * @param size number of words to display.
+	 */
+	private void processDisplayFlag(String size) {
+		if (size.equals("all") == true) {
+			System.out.println("Now displaying all words.");
+			results.setMaxResults(Results.ALL_WORDS);
+			return;
+		} 
+		try {
+			int number = Integer.valueOf(size);
+			if (number > 0) {
+				System.out.format("Now displaying %d results%n", number);
+				results.setMaxResults(number);
+			} else {
+				System.out.format("Invalid number: %d. Can't display zero or less words.%n", number);
+				printHelp();
+			}
+		} catch (NumberFormatException e) {
+			System.out.format("Invalid number: %s%n", size);
+			printHelp();
+		}
+	}
+	
+	
+	/**
+	 * Sets the sorting method for use when displaying the set of words.<p>
+	 * 
+	 * <b>Usage</b><p>
+	 * {@code -s <sort_type> }<p>
+	 * 
+	 * <b>sort_type</b><p>
+	 * <i>len</i> - sorted by length in descending order.<br>
+	 * <i>alpha</i> - sorted alphabetically in ascending order.<br>
+	 * 
+	 * @param method command to sorting flag
+	 */
+	private void processSortFlag(String method) {
+		if (method.equals("len") == true) {
+			System.out.println("Sorting results by length in descending order");
+			results.sortByWordLengthDesc();
+		} else if (method.equals("alpha") == true) {	
+			System.out.println("Sorting results alphapetically");
+			results.sortByDefault();
+		} else {
+			System.out.format("Invalid sorting option: %s%n", method);
+			printHelp();
+		}
+	}
+	
+	
+	/**
+	 * Print out a help message detailing the usage of command line options.
+	 */
+	private void printHelp() {
+		System.out.println("Flag  Param    Details");
+		System.out.println(" -f   **x**    Add a filter. 'x' is the board letter.");
+		System.out.println("               Can have 0 or more stars before and after the board letter.");
+		System.out.println(" -h            Print this message.");
+		System.out.println(" -q            Quit interactive session.");
+		System.out.println(" -n   xx       Display xx number of words.");
+		System.out.println(" -n   all      Display all words.");
+		System.out.println(" -r            Repeat last search.");
+		System.out.println(" -s   len      Words are sorted by length.");
+		System.out.println(" -s   alpha    Words are sorted alphapetically.");
+		// System.out.println("");
 	}
 
 }

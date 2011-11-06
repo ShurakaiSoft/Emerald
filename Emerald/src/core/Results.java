@@ -161,18 +161,17 @@ public class Results {
 	 * @see sortByWordLengthAsc
 	 */
 	public List<String> getSortedResults() {
-		List<String> filteredResults;
+		List<String> subset;
 		if (filter == null) {
-			filteredResults = allWords;
+			subset = allWords;
 		} else {
-			filteredResults = getFilteredWords();
+			subset = getFilteredWords();
 		}
-		
-		int wordCount = Math.min(filteredResults.size(), wordLimit);
-		ArrayList<String> results = new ArrayList<String>(wordCount);	
-		results.addAll(filteredResults.subList(0, wordCount));
-		sortResults(results);
-		return results;
+		sortResults(subset);
+		int wordCount = Math.min(subset.size(), wordLimit);
+		ArrayList<String> result = new ArrayList<String>(wordCount);	
+		result.addAll(subset.subList(0, wordCount));
+		return result;
 	}
 	
 	

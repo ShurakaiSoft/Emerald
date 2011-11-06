@@ -1,14 +1,16 @@
 The ToDo list.
 
-
 TextUI
-* add ability to have multiple flags and a search string on one line.
+* Add command: -c show current formatting settings
+* Add command: -s score sort by score.
+* Modify: output to highlight board character. Perhaps upper case it.
 
 Results
 * Add options to sort by score
 
 Dictionary
 * Modify it to allow multiple readers but one writer.
+* Add scrabble score to words in dictionary.
 
 Extensions
 * Add an Android GUI.

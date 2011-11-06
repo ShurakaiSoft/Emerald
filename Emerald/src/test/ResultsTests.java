@@ -191,4 +191,18 @@ public class ResultsTests {
 		words = adfsResults.getSortedResults();
 		assertTrue(words.size() == 8);
 	}
+	
+	
+	@Test
+	public void testLengthSubset() {
+		adfsResults.sortByWordLengthDesc();
+		adfsResults.setMaxResults(5);
+		List<String> words = adfsResults.getSortedResults();
+		assertTrue(words.size() == 5);
+		assertTrue(words.contains("fads"));
+		assertTrue(words.contains("ads"));
+		assertTrue(words.contains("fad"));
+		assertTrue(words.contains("fas"));
+		assertTrue(words.contains("sad"));
+	}
 }
